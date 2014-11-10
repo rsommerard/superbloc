@@ -30,6 +30,7 @@ void init_super(unsigned vol, int serie, char* nom)
     
     save_super();
     
+    memset(buf, 0, HDA_SECTORSIZE);
     memcpy(buf, &bl, sizeof(struct bloc_libre_s));
     write_bloc(vol, 1, buf);
     
@@ -39,6 +40,7 @@ void init_super(unsigned vol, int serie, char* nom)
 void save_super()
 {
     unsigned char buf[HDA_SECTORSIZE];
+    memset(buf, 0, HDA_SECTORSIZE);
     memcpy(buf, &sb, sizeof(struct superbloc_s));
     write_bloc(vol_courant, 0, buf);
 }
@@ -46,6 +48,8 @@ void save_super()
 int load_super(unsigned vol)
 {
     unsigned char buf[HDA_SECTORSIZE];
+    
+    memset(buf, 0, HDA_SECTORSIZE);
     read_bloc(vol, 0, buf);
     memcpy(&sb, buf, sizeof(struct superbloc_s));
     
@@ -54,7 +58,7 @@ int load_super(unsigned vol)
         vol_courant = vol;
         return 0;
     }
-    
+
     return -1;
 }
 
@@ -63,7 +67,7 @@ unsigned new_bloc()
     struct bloc_libre_s* bl;
     unsigned char buf[HDA_SECTORSIZE];
     unsigned res;
-    
+
     if(sb.nb_blocs_libres == 0)
         return 0;
         
@@ -99,7 +103,9 @@ void free_bloc(unsigned bloc)
     bl.size = 1;
     bl.next = sb.premier_libre;
     sb.premier_libre = bloc;
+    sb.nb_blocs_libres++;
     
+    memset(buf, 0, HDA_SECTORSIZE);
     memcpy(buf, &bl, sizeof(struct bloc_libre_s));
     write_bloc(vol_courant, bloc, buf);
     save_super();

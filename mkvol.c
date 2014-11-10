@@ -4,12 +4,13 @@
 #include "hardware.h"
 #include "mbr.h"
 #include "drive.h"
+#include "vol.h"
 
 /* default values */
 #define NSECTORS_DFLT           100
 #define FIRST_CYLINDER_DFLT     0
 #define FIRST_SECTOR_DFLT       1
-#define VOL_DFLT                1
+#define VOL_DFLT                0
 
 extern struct mbr_s mbr;
 
@@ -107,6 +108,8 @@ int main (int argc, char **argv)
     mbr.nb_vols++;
 
     write_mbr();
+    
+    format_vol(vol);
 
     /* and exit! */
     exit(EXIT_SUCCESS);

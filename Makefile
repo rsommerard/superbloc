@@ -12,8 +12,8 @@ LIBS    = -lhardware
 ###------------------------------
 ### Main targets 
 ###------------------------------------------------------------
-BINARIES= mkhd dmps frmt mkvol dvol mknfs dfs
-OBJECTS	= drive.o dmps.o frmt.o mkhd.o mkvol.o dvol.o bloc.o mknfs.o dfs.o
+BINARIES= mkhd dmps frmt mkvol dvol mknfs dfs test
+OBJECTS	= drive.o dmps.o frmt.o mkhd.o mkvol.o dvol.o bloc.o mknfs.o dfs.o test.o
 
 all: $(BINARIES) $(OBJECTS)
 
@@ -32,13 +32,16 @@ dvol: dvol.o mbr.o drive.o
 frmt: frmt.o drive.o mbr.o
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBDIR) $(LIBS)
 
-mkvol: mkvol.o mbr.o drive.o
+mkvol: mkvol.o mbr.o drive.o vol.o
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBDIR) $(LIBS)
 	
 mknfs: mknfs.o mbr.o drive.o bloc.o vol.o
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBDIR) $(LIBS)
 	
 dfs: dfs.o mbr.o drive.o bloc.o vol.o
+	$(CC) $(CFLAGS) -o $@ $^ $(LIBDIR) $(LIBS)
+	
+test: test.o drive.o bloc.o mbr.o vol.o
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBDIR) $(LIBS)
 
 ###------------------------------
@@ -76,6 +79,9 @@ vol.o: vol.c
 	$(CC) $(CFLAGS) -c $^ $(INCDIR)
 	
 bloc.o: bloc.c
+	$(CC) $(CFLAGS) -c $^ $(INCDIR)
+	
+test.o: test.c
 	$(CC) $(CFLAGS) -c $^ $(INCDIR)
 
 ###------------------------------

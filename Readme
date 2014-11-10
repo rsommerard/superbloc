@@ -8,6 +8,6 @@ INFOS
 Need to execute these commands before the first run:
 
 	export HW_CONFIG=hardware.ini
-	export CURRENT_VOLUME=1
+	export CURRENT_VOLUME=0
 
 The mknfs command need these two environment variables.

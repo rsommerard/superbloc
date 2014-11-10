@@ -3,6 +3,7 @@
 #include "hardware.h"
 #include "mbr.h"
 #include "bloc.h"
+#include "drive.h"
 
 extern struct superbloc_s sb;
 extern struct mbr_s mbr;
@@ -19,6 +20,11 @@ int main (int argc, char **argv)
     int current_volume_int;
     char* hw_config;
     char* current_volume;
+    
+    /*unsigned char buf[HDA_SECTORSIZE];
+    struct bloc_libre_s bl;
+    int current;*/
+    
     
     hw_config = getenv("HW_CONFIG");
     current_volume = getenv("CURRENT_VOLUME");
@@ -38,6 +44,7 @@ int main (int argc, char **argv)
     /* Allows all IT */
     _mask(1);
 
+    read_mbr();
     load_super(current_volume_int);
     
     printf("--------------------------------------------------------------------------------\n");
@@ -48,7 +55,20 @@ int main (int argc, char **argv)
     printf("Premier libre: %i\n", sb.premier_libre);
     printf("Nb blocs libres: %i\n", sb.nb_blocs_libres);
     printf("Inoeud racine: %i\n", sb.inoeud_racine);
-    printf("%% libre: %i %%\n", ((sb.nb_blocs_libres/mbr.vols[current_volume_int].nb_sec)*100));
+    if(sb.nb_blocs_libres != 0)
+        printf("libre: %i%%\n", ((sb.nb_blocs_libres*100)/mbr.vols[current_volume_int].nb_sec));
+    else
+        printf("libre: 666%%\n");
+        
+    
+    /*current = sb.premier_libre;
+    do {
+        memset(buf, 0, HDA_SECTORSIZE);
+        read_bloc(current_volume_int, current, buf);
+        memcpy(&bl, buf, sizeof(struct bloc_libre_s));
+        printf("%i to %i\n", current, bl.next);
+        current = bl.next;
+    } while(bl.next != 0);*/
 
     /* and exit! */
     exit(EXIT_SUCCESS);
